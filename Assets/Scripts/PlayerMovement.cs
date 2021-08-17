@@ -12,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        transform.position = new Vector3(0, 0, 0);//when we play the player start from origin 
+        transform.position = new Vector3(0, 0, 0);//when we play the game player start from origin 
     }
     // Update is called once per frame
     void Update()
