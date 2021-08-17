@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     float canfire = 0f;//counting with fire rate
     [SerializeField] float fireRate;//for how many seconds the laser instantiate
     public bool tripleShot = false;
+    [SerializeField] bool isSpeedPwerUpActive = false;//variable to know wheather player collected speed powerup or not
     [SerializeField] GameObject tripleLaserPrefab;
     // Start is called before the first frame update
     void Start()
@@ -62,7 +63,7 @@ public class PlayerMovement : MonoBehaviour
     }
         //Method for x and y boundarys for player
     public void XYDirection(float Xval, float Yval)
-        {
+    {
             if (Yval > 0)
             {
                 transform.position = new Vector3(Xval, 0, 0);
@@ -79,22 +80,43 @@ public class PlayerMovement : MonoBehaviour
             {
                 transform.position = new Vector3(10f, Yval, 0);
             }
+    }
+    //method for player moving in axis
+    public void Key(Vector3 vector, float axis)
+    {
+        //if speed power enabled then move 2x faster than normal speed else normal speed
+        if (isSpeedPwerUpActive)
+        {
+            transform.Translate(vector * Time.deltaTime * moveSpeed*2 * axis);
+
         }
-        //method for player moving in axis
-        public void Key(Vector3 vector, float axis)
+        else
         {
             transform.Translate(vector * Time.deltaTime * moveSpeed * axis);
+
         }
+    }
     public void TripleShotPowerUp()
     {
         tripleShot = true;
         StartCoroutine("TripleShotPowerDown");
 
     }
-    public IEnumerator TripleShotPowerDown()
+    //method to enable speed power up and power down
+    public void SpeedPowerUpOn()
     {
-        yield return new WaitForSeconds(2);
+        isSpeedPwerUpActive = true;
+        StartCoroutine("SpeedPowerDown");
+    }
+    IEnumerator TripleShotPowerDown()
+    {
+        yield return new WaitForSeconds(5);
         tripleShot = false;
+    }
+    IEnumerator SpeedPowerDown()
+    {
+        yield return new WaitForSeconds(5);
+        isSpeedPwerUpActive = false;
     }
     
 }
