@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,8 +7,9 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] float moveSpeed;
     [SerializeField] GameObject laserPrefab;
-    [SerializeField]float canfire;
+    [SerializeField]float canfire=0f;
     [SerializeField]float fireRate=0.25f;
+    Vector3 directionKey;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,31 +19,21 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Player input movement
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
-        transform.Translate(Vector3.right * Time.deltaTime * moveSpeed*horizontal);
-        transform.Translate(Vector3.up * Time.deltaTime * moveSpeed*vertical);
 
-
-        //Player Y Boundarys
-        if (transform.position.y > 0)
+        if (Input.GetKey(KeyCode.RightArrow)||Input.GetKey(KeyCode.LeftArrow))
         {
-            transform.position = new Vector3(transform.position.x, 0, 0);
+            Key(Vector3.right, horizontal);
         }
-        else if (transform.position.y < -4.1f)
+        else if (Input.GetKey(KeyCode.UpArrow)||Input.GetKey(KeyCode.DownArrow))
         {
-            transform.position = new Vector3(transform.position.x, -4.1f, 0);
+            Key(Vector3.up, vertical);
         }
-        //Player X Boundarys
-        if (transform.position.x >=10f )
-        {
-            transform.position = new Vector3(-10f, transform.position.y, 0);
-        }
-        else if (transform.position.x <= -10f)
-        {
-            transform.position = new Vector3(10f,transform.position.y, 0);
-        }
-        
+        //Player  Boundarys
+        XYDirection(transform.position.x,transform.position.y);
+        //Instantiating laser
         if (Input.GetKeyDown(KeyCode.Space)||Input.GetMouseButton(0))
         {
             if (Time.time > canfire)
@@ -51,5 +43,31 @@ public class PlayerMovement : MonoBehaviour
             }
 
         }
+      
+    }
+
+    private void XYDirection(float Xval,float Yval)
+    {
+        if (Yval > 0)
+        {
+            transform.position = new Vector3(Xval,0, 0);
+        }
+        else if (Yval < -4.1f)
+        {
+            transform.position = new Vector3(Xval,-4.1f, 0);
+        }
+        if (Xval >=10f)
+        {
+            transform.position = new Vector3(-10f, Yval, 0);
+        }
+        else if (Xval <= -10f)
+        {
+            transform.position = new Vector3(10f, Yval, 0);
+        }
+    }
+    public void Key(Vector3 vector,float axis)
+    {
+      
+        transform.Translate(vector * Time.deltaTime * moveSpeed * axis);
     }
 }
