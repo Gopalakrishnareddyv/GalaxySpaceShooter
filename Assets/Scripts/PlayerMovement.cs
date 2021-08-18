@@ -9,16 +9,18 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] GameObject laserPrefab;//prefab for instantiating
     float canfire = 0f;//counting with fire rate
     [SerializeField] float fireRate;//for how many seconds the laser instantiate
-    public bool tripleShot = false;
+    public bool tripleShot = false;//varible for checking whether the tripleshot is collected or not
     [SerializeField] bool isSpeedPwerUpActive = false;//variable to know wheather player collected speed powerup or not
-    [SerializeField] GameObject tripleLaserPrefab;
-    public int playerHealth=5;
-    Animator anim;
+    [SerializeField] bool isPowerShield = false;//variable to know whether power shield is collected or not
+    [SerializeField] GameObject tripleLaserPrefab;//accessing triple shot laser
+    public int playerHealth=5;//starting power health
+    int powerShieldHealth;//power health after collecting powershield
+    [SerializeField] GameObject explosion;
     // Start is called before the first frame update
     void Start()
     {
         transform.position = new Vector3(0, 0, 0);//when we play the game player start from origin 
-        anim = GetComponent<Animator>();
+        powerShieldHealth = playerHealth;//initializing player health to powershiled
     }
     // Update is called once per frame
     void Update()
@@ -39,6 +41,11 @@ public class PlayerMovement : MonoBehaviour
         {
             Shoot();
         }
+        //if powershield collected player health changes to starting player health
+        if (isPowerShield)
+        {
+            playerHealth = powerShieldHealth;
+        }
     }
     public void Shoot()
     {
@@ -55,6 +62,7 @@ public class PlayerMovement : MonoBehaviour
                 canfire = Time.time + fireRate;
 
             }
+            //single shot
             else
             {
                 Instantiate(laserPrefab, transform.position + new Vector3(0, 1f, 0), Quaternion.identity);
@@ -99,6 +107,7 @@ public class PlayerMovement : MonoBehaviour
 
         }
     }
+    //this for when collected tripleshot object ,tripleshot shot bool will be true
     public void TripleShotPowerUp()
     {
         tripleShot = true;
@@ -111,6 +120,12 @@ public class PlayerMovement : MonoBehaviour
         isSpeedPwerUpActive = true;
         StartCoroutine("SpeedPowerDown");
     }
+    //method to enable power shield
+    public void PowerShieldOn()
+    {
+        isPowerShield = true;
+        StartCoroutine("PowerShieldOff");
+    }
     IEnumerator TripleShotPowerDown()
     {
         yield return new WaitForSeconds(5);
@@ -121,13 +136,20 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(5);
         isSpeedPwerUpActive = false;
     }
+    IEnumerator PowerShieldOff()
+    {
+        yield return new WaitForSeconds(5);
+        isPowerShield = false;
+    }
+    //decreasing player health when collides with enemy
     public void Damage()
     {
         playerHealth--;
+       
         if (playerHealth == 0)
         {
-            anim.SetTrigger("PlayerDie");
-            //gameObject.SetActive(false);
+            Instantiate(explosion, transform.position, Quaternion.identity);
+            gameObject.SetActive(false);
         }
     }
 }

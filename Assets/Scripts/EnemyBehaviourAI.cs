@@ -5,11 +5,11 @@ using UnityEngine;
 public class EnemyBehaviourAI : MonoBehaviour
 {
     [SerializeField] float enemySpeed;//enemey Speed
-    Animator anim;
+    [SerializeField] GameObject enemyExplosion;
     // Start is called before the first frame update
     void Start()
     {
-        anim = GetComponent<Animator>();
+     
     }
 
     // Update is called once per frame
@@ -21,13 +21,14 @@ public class EnemyBehaviourAI : MonoBehaviour
         if (transform.position.y <= -6f)
         {
             transform.position = new Vector3(Random.Range(-8f, 8f), 6f, 0);
-            anim.SetBool("EnemyDie", false);
+            
 
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        //collision with laser
         if (collision.tag == "Laser")
         {
             if (collision.transform.parent != null)
@@ -35,9 +36,10 @@ public class EnemyBehaviourAI : MonoBehaviour
                 Destroy(collision.transform.gameObject);
             }
             Destroy(collision.gameObject);
-            anim.SetBool("EnemyDie", true);
-            //Destroy(this.gameObject);
+            Instantiate(enemyExplosion, transform.position, Quaternion.identity);
+            Destroy(this.gameObject);
         }
+        //collision with player
         else if (collision.tag == "Player")
         {
             PlayerMovement player = collision.GetComponent<PlayerMovement>();
@@ -45,9 +47,8 @@ public class EnemyBehaviourAI : MonoBehaviour
             {
                 player.Damage();
             }
-            anim.SetBool("EnemyDie", true);
-
-            //Destroy(this.gameObject);
+            
+            Destroy(this.gameObject);
         }
     }
 }

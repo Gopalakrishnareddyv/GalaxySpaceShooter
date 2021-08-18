@@ -5,7 +5,7 @@ using UnityEngine;
 public class TripleShotAndPowerUp : MonoBehaviour
 {
     [SerializeField]float tripleShotPowerup=3f;
-    [SerializeField]int powerUpID;//0=tripleshot,1=speed boost,2=shields 
+    [SerializeField]int powerUpID;//0=tripleshot,1=speed boost,2=powershield
     // Start is called before the first frame update
     void Start()
     {
@@ -26,6 +26,7 @@ public class TripleShotAndPowerUp : MonoBehaviour
             {
                 if (powerUpID == 0)
                 {
+                    //for tripleshot
                     player.TripleShotPowerUp();
                 }
                 else if (powerUpID == 1)
@@ -36,6 +37,7 @@ public class TripleShotAndPowerUp : MonoBehaviour
                 else if (powerUpID == 2)
                 {
                     //for shields
+                    player.PowerShieldOn();
                 }
             }
             Destroy(this.gameObject);
