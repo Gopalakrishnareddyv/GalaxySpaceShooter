@@ -13,10 +13,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] bool isSpeedPwerUpActive = false;//variable to know wheather player collected speed powerup or not
     [SerializeField] GameObject tripleLaserPrefab;
     public int playerHealth=5;
+    Animator anim;
     // Start is called before the first frame update
     void Start()
     {
         transform.position = new Vector3(0, 0, 0);//when we play the game player start from origin 
+        anim = GetComponent<Animator>();
     }
     // Update is called once per frame
     void Update()
@@ -124,7 +126,8 @@ public class PlayerMovement : MonoBehaviour
         playerHealth--;
         if (playerHealth == 0)
         {
-            gameObject.SetActive(false);
+            anim.SetTrigger("PlayerDie");
+            //gameObject.SetActive(false);
         }
     }
 }
