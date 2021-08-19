@@ -20,6 +20,9 @@ public class PlayerMovement : MonoBehaviour
     UIManager uiManager;
     GameManager gameManager;
     SpawnManager spawnManager;
+    AudioSource audioSource;
+    [SerializeField] AudioClip playerExplosionClip;
+    [SerializeField] AudioClip shieldClip;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,9 +31,14 @@ public class PlayerMovement : MonoBehaviour
         uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
+        audioSource = GetComponent<AudioSource>();
         if (uiManager != null)
         {
             uiManager.UpdateLives(playerHealth);
+        }
+        if (spawnManager != null)
+        {
+            spawnManager.CoroutinesFunctions();
         }
     }
     // Update is called once per frame
@@ -134,6 +142,8 @@ public class PlayerMovement : MonoBehaviour
         //StartCoroutine("PowerShieldOff");
         isPowerShield = true;
         shield.SetActive(true);
+        audioSource.clip = shieldClip;
+        audioSource.Play();
     }
     IEnumerator TripleShotPowerDown()
     {
@@ -171,7 +181,9 @@ public class PlayerMovement : MonoBehaviour
             {
                 Instantiate(explosion, transform.position, Quaternion.identity);
                 gameManager.gameOver = true;
-                gameObject.SetActive(false);
+                audioSource.clip = playerExplosionClip;
+                audioSource.Play();
+                Destroy(this.gameObject);
                 uiManager.GameOverScreenOn();
             }
         }

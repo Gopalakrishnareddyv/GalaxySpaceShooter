@@ -18,7 +18,8 @@ public class TripleShotAndPowerUp : MonoBehaviour
         transform.Translate(Vector2.down * Time.deltaTime * tripleShotPowerup);
         if (transform.position.y <= -6f)
         {
-            transform.position = new Vector3(Random.Range(-8f, 8f), 6f, 0);
+            //transform.position = new Vector3(Random.Range(-8f, 8f), 6f, 0);
+            Destroy(gameObject);
         }
     }
     private void OnTriggerEnter2D(Collider2D collision)

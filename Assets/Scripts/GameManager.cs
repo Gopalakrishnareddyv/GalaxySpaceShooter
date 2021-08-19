@@ -9,9 +9,11 @@ public class GameManager : MonoBehaviour
     public bool gameOver = true;
     public GameObject player;
     UIManager uiManager;
+    SpawnManager spawnManager;
     void Start()
     {
         uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
     }
 
     // Update is called once per frame
