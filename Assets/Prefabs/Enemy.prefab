@@ -220,3 +220,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemySpeed: 3
+  enemyExplosion: {fileID: 3274199107022213162, guid: 6bc3e039c495c654d825dde8fe666e63, type: 3}

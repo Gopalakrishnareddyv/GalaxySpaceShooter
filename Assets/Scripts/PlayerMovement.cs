@@ -13,14 +13,25 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] bool isSpeedPwerUpActive = false;//variable to know wheather player collected speed powerup or not
     [SerializeField] bool isPowerShield = false;//variable to know whether power shield is collected or not
     [SerializeField] GameObject tripleLaserPrefab;//accessing triple shot laser
-    public int playerHealth=5;//starting power health
-    int powerShieldHealth;//power health after collecting powershield
+    public int playerHealth=3;//starting power health
+    //int powerShieldHealth;//power health after collecting powershield
     [SerializeField] GameObject explosion;
+    [SerializeField] GameObject shield;
+    UIManager uiManager;
+    GameManager gameManager;
+    SpawnManager spawnManager;
     // Start is called before the first frame update
     void Start()
     {
         transform.position = new Vector3(0, 0, 0);//when we play the game player start from origin 
-        powerShieldHealth = playerHealth;//initializing player health to powershiled
+        //powerShieldHealth = playerHealth;//initializing player health to powershiled
+        uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
+        if (uiManager != null)
+        {
+            uiManager.UpdateLives(playerHealth);
+        }
     }
     // Update is called once per frame
     void Update()
@@ -42,10 +53,7 @@ public class PlayerMovement : MonoBehaviour
             Shoot();
         }
         //if powershield collected player health changes to starting player health
-        if (isPowerShield)
-        {
-            playerHealth = powerShieldHealth;
-        }
+        
     }
     public void Shoot()
     {
@@ -123,8 +131,9 @@ public class PlayerMovement : MonoBehaviour
     //method to enable power shield
     public void PowerShieldOn()
     {
+        //StartCoroutine("PowerShieldOff");
         isPowerShield = true;
-        StartCoroutine("PowerShieldOff");
+        shield.SetActive(true);
     }
     IEnumerator TripleShotPowerDown()
     {
@@ -134,23 +143,39 @@ public class PlayerMovement : MonoBehaviour
     IEnumerator SpeedPowerDown()
     {
         yield return new WaitForSeconds(5);
+
         isSpeedPwerUpActive = false;
     }
     IEnumerator PowerShieldOff()
     {
         yield return new WaitForSeconds(5);
+
         isPowerShield = false;
     }
     //decreasing player health when collides with enemy
     public void Damage()
     {
-        playerHealth--;
-       
-        if (playerHealth == 0)
+        //if player has power shield no damage else damage
+        if (isPowerShield)
         {
-            Instantiate(explosion, transform.position, Quaternion.identity);
-            gameObject.SetActive(false);
+            isPowerShield = false;
+            shield.SetActive(false);
+            return;
+            //StartCoroutine("PowerShieldOff");
         }
+        else
+        {
+            playerHealth--;
+            uiManager.UpdateLives(playerHealth);
+            if (playerHealth <1)
+            {
+                Instantiate(explosion, transform.position, Quaternion.identity);
+                gameManager.gameOver = true;
+                gameObject.SetActive(false);
+                uiManager.GameOverScreenOn();
+            }
+        }
+        
     }
 }
 
