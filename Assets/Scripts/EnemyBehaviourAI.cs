@@ -7,14 +7,14 @@ public class EnemyBehaviourAI : MonoBehaviour
     [SerializeField] float enemySpeed;//enemey Speed
     [SerializeField] GameObject enemyExplosion;
     UIManager uiManager;
-    AudioSource audioSource;
-    [SerializeField] AudioClip laserClip;
+    AudioSource sound;
+    public AudioClip explosionClip;
     //[SerializeField] AudioClip explosionClip;
     // Start is called before the first frame update
     void Start()
     {
         uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
-        audioSource = GetComponent<AudioSource>();
+        sound = GameObject.Find("SoundManager").GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -42,8 +42,8 @@ public class EnemyBehaviourAI : MonoBehaviour
             }
             uiManager.UpdateScore();
             Destroy(collision.gameObject);
-            audioSource.clip = laserClip;
-            audioSource.Play();
+            sound.clip = explosionClip;
+            sound.Play();
             Instantiate(enemyExplosion, transform.position, Quaternion.identity);
             Destroy(this.gameObject);
         }

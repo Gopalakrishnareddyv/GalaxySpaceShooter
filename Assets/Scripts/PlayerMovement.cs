@@ -21,8 +21,11 @@ public class PlayerMovement : MonoBehaviour
     GameManager gameManager;
     SpawnManager spawnManager;
     AudioSource audioSource;
-    [SerializeField] AudioClip playerExplosionClip;
-    [SerializeField] AudioClip shieldClip;
+    public AudioClip laserClip;
+    public AudioClip shieldClip;
+    public AudioClip playerExplosionClip;
+    [SerializeField] GameObject[] engineFail;
+    int hitCount = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
         uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
-        audioSource = GetComponent<AudioSource>();
+        audioSource =GameObject.Find("SoundManager").GetComponent<AudioSource>();
         if (uiManager != null)
         {
             uiManager.UpdateLives(playerHealth);
@@ -76,13 +79,16 @@ public class PlayerMovement : MonoBehaviour
                 //Instantiate(laserPrefab, transform.position + new Vector3(0.65f, 0.2f, 0), Quaternion.identity);
                 //Instantiate(laserPrefab, transform.position + new Vector3(-0.65f, 0.2f, 0), Quaternion.identity);
                 canfire = Time.time + fireRate;
-
+                audioSource.clip = laserClip;
+                audioSource.Play();
             }
             //single shot
             else
             {
                 Instantiate(laserPrefab, transform.position + new Vector3(0, 1f, 0), Quaternion.identity);
                 canfire = Time.time + fireRate;
+                audioSource.clip = laserClip;
+                audioSource.Play();
             }
 
 
@@ -165,6 +171,16 @@ public class PlayerMovement : MonoBehaviour
     //decreasing player health when collides with enemy
     public void Damage()
     {
+        hitCount ++;
+        if (hitCount == 1)
+        {
+            engineFail[0].SetActive(true);
+
+        }
+        else if (hitCount == 2)
+        {
+            engineFail[1].SetActive(true);
+        }
         //if player has power shield no damage else damage
         if (isPowerShield)
         {
